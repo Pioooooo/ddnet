@@ -1567,7 +1567,7 @@ No controller found. Plug in a controller.
 == 未检测到任何控制器。请尝试重新连接控制器。
 
 Unregister protocol and file extensions
-== 清除协议与文件类型关联
+== 解除协议与文件类型关联
 
 Open the directory to add custom assets
 == 打开用以添加自定义资源的文件夹路径
