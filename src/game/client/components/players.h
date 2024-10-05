@@ -10,6 +10,7 @@
 class CPlayers : public CComponent
 {
 	friend class CGhost;
+	friend class CGameClient;
 
 	void RenderHand6(const CTeeRenderInfo *pInfo, vec2 CenterPos, vec2 Dir, float AngleOffset, vec2 PostRotOffset, float Alpha = 1.0f);
 	void RenderHand7(const CTeeRenderInfo *pInfo, vec2 CenterPos, vec2 Dir, float AngleOffset, vec2 PostRotOffset, float Alpha = 1.0f);
@@ -38,6 +39,20 @@ class CPlayers : public CComponent
 	int m_aWeaponSpriteMuzzleQuadContainerIndex[NUM_WEAPONS];
 
 	int64_t m_SkidSoundTime = 0;
+
+	void RenderHookColl();
+	class CRenderHookColl : public CComponent
+	{
+		CPlayers *m_pPlayers;
+
+	public:
+		CRenderHookColl(CPlayers *pPlayers) :
+			m_pPlayers(pPlayers)
+		{
+		}
+		virtual int Sizeof() const override { return sizeof(*this); }
+		virtual void OnRender() override { m_pPlayers->RenderHookColl(); };
+	} m_RenderHookColl{this};
 
 public:
 	float GetPlayerTargetAngle(

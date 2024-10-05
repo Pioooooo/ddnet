@@ -132,6 +132,7 @@ void CGameClient::OnConsoleInit()
 					      &m_Ghost,
 					      &m_Players,
 					      &m_MapLayersForeground,
+						  &m_Players.m_RenderHookColl,
 					      &m_Particles.m_RenderExplosions,
 					      &m_NamePlates,
 					      &m_Particles.m_RenderExtra,

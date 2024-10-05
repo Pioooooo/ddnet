@@ -814,6 +814,29 @@ inline bool CPlayers::IsPlayerInfoAvailable(int ClientId) const
 	return pPrevInfo && pInfo;
 }
 
+void CPlayers::RenderHookColl()
+{
+	if(Client()->State() != IClient::STATE_ONLINE && Client()->State() != IClient::STATE_DEMOPLAYBACK)
+		return;
+	const int LocalClientId = m_pClient->m_Snap.m_LocalClientId;
+	const int RenderLastId = (m_pClient->m_Snap.m_SpecInfo.m_SpectatorId != SPEC_FREEVIEW && m_pClient->m_Snap.m_SpecInfo.m_Active) ? m_pClient->m_Snap.m_SpecInfo.m_SpectatorId : LocalClientId;
+
+	for(int ClientId = 0; ClientId < MAX_CLIENTS; ClientId++)
+	{
+		if(ClientId == RenderLastId || !m_pClient->m_Snap.m_aCharacters[ClientId].m_Active || !IsPlayerInfoAvailable(ClientId))
+		{
+			continue;
+		}
+
+		RenderHookCollLine(&m_pClient->m_aClients[ClientId].m_RenderPrev, &m_pClient->m_aClients[ClientId].m_RenderCur, ClientId);
+	}
+	if(RenderLastId != -1 && m_pClient->m_Snap.m_aCharacters[RenderLastId].m_Active && IsPlayerInfoAvailable(RenderLastId))
+	{
+		const CGameClient::CClientData *pClientData = &m_pClient->m_aClients[RenderLastId];
+		RenderHookCollLine(&pClientData->m_RenderPrev, &pClientData->m_RenderCur, RenderLastId);
+	}
+}
+
 void CPlayers::OnRender()
 {
 	if(Client()->State() != IClient::STATE_ONLINE && Client()->State() != IClient::STATE_DEMOPLAYBACK)
@@ -908,7 +931,7 @@ void CPlayers::OnRender()
 			continue;
 		}
 
-		RenderHookCollLine(&m_pClient->m_aClients[ClientId].m_RenderPrev, &m_pClient->m_aClients[ClientId].m_RenderCur, ClientId);
+		// RenderHookCollLine(&m_pClient->m_aClients[ClientId].m_RenderPrev, &m_pClient->m_aClients[ClientId].m_RenderCur, ClientId);
 
 		// don't render offscreen
 		vec2 *pRenderPos = &m_pClient->m_aClients[ClientId].m_RenderPos;
@@ -921,7 +944,7 @@ void CPlayers::OnRender()
 	if(RenderLastId != -1 && m_pClient->m_Snap.m_aCharacters[RenderLastId].m_Active && IsPlayerInfoAvailable(RenderLastId))
 	{
 		const CGameClient::CClientData *pClientData = &m_pClient->m_aClients[RenderLastId];
-		RenderHookCollLine(&pClientData->m_RenderPrev, &pClientData->m_RenderCur, RenderLastId);
+		// RenderHookCollLine(&pClientData->m_RenderPrev, &pClientData->m_RenderCur, RenderLastId);
 		RenderPlayer(&pClientData->m_RenderPrev, &pClientData->m_RenderCur, &aRenderInfo[RenderLastId], RenderLastId);
 	}
 }
